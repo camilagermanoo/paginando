@@ -2,19 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { View, Text, ActivityIndicator } from 'react-native';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { View, ActivityIndicator } from 'react-native';
 
-// Screens
 import LoginScreen from './src/screens/LoginScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import BookDetailScreen from './src/screens/BookDetailScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import { auth } from './src/firebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
 
-// Custom Hook
-
-// Navigation
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -25,18 +21,16 @@ const DrawerNavigation = () => (
   </Drawer.Navigator>
 );
 
-const App = () => {
+export default function App() {
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
-
-  function onAuthStateChanged(user) {
-    setUser(user);
-    if (initializing) setInitializing(false);
-  }
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+      if (initializing) setInitializing(false);
+    });
+    return unsubscribe;
   }, []);
 
   if (initializing) return <ActivityIndicator size="large" style={{ flex: 1 }} />;
@@ -55,6 +49,4 @@ const App = () => {
       </Stack.Navigator>
     </NavigationContainer>
   );
-};
-
-export default App;
+}
