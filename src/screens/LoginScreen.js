@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
 import { auth } from '../firebaseConfig';
 import {
   createUserWithEmailAndPassword,
@@ -7,6 +7,7 @@ import {
   signInWithCredential,
   GoogleAuthProvider
 } from 'firebase/auth';
+import { AntDesign, FontAwesome, Octicons } from '@expo/vector-icons';
 
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
@@ -32,8 +33,6 @@ export default function LoginScreen({ navigation }) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [name, setName] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
   const handleLogin = async () => {
@@ -45,11 +44,6 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleRegister = async () => {
-    if (password !== confirmPassword) {
-      alert('As senhas não coincidem');
-      return;
-    }
-
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       alert('Cadastro realizado com sucesso');
@@ -60,16 +54,14 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{isRegistering ? 'Cadastre-se' : 'Entre na sua conta'}</Text>
+      <Text style={styles.logo}>Paginando</Text>
 
-      {isRegistering && (
-        <TextInput
-          placeholder="Nome"
-          value={name}
-          onChangeText={setName}
-          style={styles.input}
-        />
-      )}
+      <Image
+        source={require('../assets/avatar_livro.png')}
+        style={styles.image}
+      />
+
+      <Text style={styles.heading}>{isRegistering ? 'Crie sua conta' : 'Entre na sua conta'}</Text>
 
       <TextInput
         placeholder="Email"
@@ -78,6 +70,7 @@ export default function LoginScreen({ navigation }) {
         style={styles.input}
         keyboardType="email-address"
         autoCapitalize="none"
+        placeholderTextColor="#999"
       />
       <TextInput
         placeholder="Senha"
@@ -85,34 +78,35 @@ export default function LoginScreen({ navigation }) {
         onChangeText={setPassword}
         style={styles.input}
         secureTextEntry
+        placeholderTextColor="#999"
       />
-      {isRegistering && (
-        <TextInput
-          placeholder="Confirmar Senha"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          style={styles.input}
-          secureTextEntry
-        />
-      )}
 
-      <Button
-        title={isRegistering ? 'Cadastrar' : 'Entrar'}
+      <TouchableOpacity
+        style={styles.button}
         onPress={isRegistering ? handleRegister : handleLogin}
-      />
+      >
+        <Text style={styles.buttonText}>{isRegistering ? 'Cadastrar' : 'Entrar'}</Text>
+      </TouchableOpacity>
 
-      <View style={{ marginVertical: 10 }}>
-        <Button
-          title="Entrar com Google"
-          onPress={() => promptAsync()}
-          disabled={!request}
-          color="#DB4437"
-        />
+      <Text style={styles.or}>ou:</Text>
+
+      <View style={styles.socialContainer}>
+        <TouchableOpacity onPress={() => promptAsync()} disabled={!request}>
+          <AntDesign name="google" size={32} color="#DB4437" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <FontAwesome name="facebook-square" size={32} color="#3b5998" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Octicons name="mark-github" size={32} color="black" />
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity onPress={() => setIsRegistering(!isRegistering)}>
-        <Text style={styles.link}>
-          {isRegistering ? 'Já tem uma conta? Entre' : 'Não tem uma conta? Cadastre-se'}
+        <Text style={styles.registerText}>
+          {isRegistering
+            ? 'Já tem uma conta? Entre agora'
+            : 'Não tem uma conta? Cadastre-se agora'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -120,8 +114,66 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20 },
-  input: { height: 40, borderBottomWidth: 1, marginBottom: 12 },
-  link: { marginTop: 16, color: 'blue', textAlign: 'center' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingHorizontal: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    marginTop: -60,
+  },
+  heading: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    height: 48,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginBottom: 16,
+    fontSize: 16,
+    color: '#333',
+  },
+  button: {
+    backgroundColor: '#69a9ff',
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 6,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  or: {
+    marginVertical: 12,
+    fontSize: 14,
+    color: '#333',
+  },
+  socialContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '60%',
+    marginBottom: 20,
+  },
+  registerText: {
+    color: '#0057ff',
+    fontWeight: '500',
+    marginTop: 10,
+  },
+  image: {
+    width: 250,
+    height: 250,
+    resizeMode: 'contain',
+    marginBottom: 10,
+  },
 });
