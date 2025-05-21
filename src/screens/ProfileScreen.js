@@ -8,7 +8,7 @@ const ProfileScreen = ({ navigation }) => {
   const handleSignOut = async () => {
     try {
       await auth.signOut();
-      navigation.replace('Login'); // volta para login após logout
+      navigation.replace('LoginScreen');
     } catch (error) {
       console.error('Erro ao deslogar:', error);
       Alert.alert('Erro', 'Não foi possível sair. Tente novamente.');

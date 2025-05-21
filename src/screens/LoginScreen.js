@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   signInWithCredential,
   updateProfile,
+  GoogleAuthProvider,
 } from 'firebase/auth';
 import { AntDesign, FontAwesome, Octicons } from '@expo/vector-icons';
 
@@ -28,7 +29,7 @@ export default function LoginScreen({ navigation }) {
       signInWithCredential(auth, credential)
         .then(() => {
           console.log('Login com Google feito!');
-          navigation.replace('Profile'); // vai para perfil após login
+          navigation.replace('Drawer');
         })
         .catch((error) => {
           console.error('Erro ao logar com Google:', error);
@@ -48,7 +49,7 @@ export default function LoginScreen({ navigation }) {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
-      navigation.replace('Profile');
+      navigation.replace('Drawer'); // CORRIGIDO
     } catch (error) {
       console.error('Erro ao logar:', error.message);
       Alert.alert('Erro', 'Email ou senha incorretos');
@@ -68,8 +69,12 @@ export default function LoginScreen({ navigation }) {
       await updateProfile(auth.currentUser, {
         displayName: `${firstName} ${lastName}`,
       });
+      await auth.currentUser.reload();
       Alert.alert('Sucesso', 'Cadastro realizado com sucesso');
-      navigation.replace('Profile');
+      navigation.replace('Drawer');
+
+      Alert.alert('Sucesso', 'Cadastro realizado com sucesso');
+      navigation.replace('Drawer'); 
     } catch (error) {
       console.error('Erro ao cadastrar:', error.message);
       Alert.alert('Erro', 'Não foi possível cadastrar. Verifique os dados e tente novamente');
@@ -82,10 +87,7 @@ export default function LoginScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.logo}>Paginando</Text>
 
-      <Image
-        source={require('../assets/avatar_livro.png')}
-        style={styles.image}
-      />
+      <Image source={require('../assets/avatar_livro.png')} style={styles.image} />
 
       <Text style={styles.heading}>{isRegistering ? 'Crie sua conta' : 'Entre na sua conta'}</Text>
 
