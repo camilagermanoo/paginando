@@ -8,7 +8,7 @@ const DashboardScreen = ({ navigation }) => {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetch('https://www.googleapis.com/books/v1/volumes?q=cakes')
+    fetch('https://www.googleapis.com/books/v1/volumes?q=mouse')
       .then(res => res.json())
       .then(data => {
         setBooks(data.items || []);
@@ -39,7 +39,7 @@ const DashboardScreen = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Topo com "Início" e barra de busca */}
+      {/* Topo com barra de busca */}
       <View style={styles.header}>
         <View style={styles.searchContainer}>
           <Icon name="search" size={16} color="#888" style={styles.searchIcon} />

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, Alert } from 'react-native';
 import { auth } from '../firebaseConfig';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithCredential,
-  GoogleAuthProvider
+  updateProfile,
 } from 'firebase/auth';
 import { AntDesign, FontAwesome, Octicons } from '@expo/vector-icons';
 
@@ -26,29 +26,55 @@ export default function LoginScreen({ navigation }) {
       const { id_token } = response.params;
       const credential = GoogleAuthProvider.credential(id_token);
       signInWithCredential(auth, credential)
-        .then(() => console.log('Login com Google feito!'))
-        .catch((error) => console.error('Erro ao logar com Google:', error));
+        .then(() => {
+          console.log('Login com Google feito!');
+          navigation.replace('Profile'); // vai para perfil após login
+        })
+        .catch((error) => {
+          console.error('Erro ao logar com Google:', error);
+          Alert.alert('Erro', 'Não foi possível logar com Google');
+        });
     }
   }, [response]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
+    setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email.trim(), password);
+      navigation.replace('Profile');
     } catch (error) {
       console.error('Erro ao logar:', error.message);
+      Alert.alert('Erro', 'Email ou senha incorretos');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleRegister = async () => {
+    if (!firstName || !lastName) {
+      Alert.alert('Erro', 'Por favor, preencha nome e sobrenome');
+      return;
+    }
+    setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert('Cadastro realizado com sucesso');
+      await createUserWithEmailAndPassword(auth, email.trim(), password);
+      await updateProfile(auth.currentUser, {
+        displayName: `${firstName} ${lastName}`,
+      });
+      Alert.alert('Sucesso', 'Cadastro realizado com sucesso');
+      navigation.replace('Profile');
     } catch (error) {
       console.error('Erro ao cadastrar:', error.message);
+      Alert.alert('Erro', 'Não foi possível cadastrar. Verifique os dados e tente novamente');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,6 +88,25 @@ export default function LoginScreen({ navigation }) {
       />
 
       <Text style={styles.heading}>{isRegistering ? 'Crie sua conta' : 'Entre na sua conta'}</Text>
+
+      {isRegistering && (
+        <>
+          <TextInput
+            placeholder="Nome"
+            value={firstName}
+            onChangeText={setFirstName}
+            style={styles.input}
+            placeholderTextColor="#999"
+          />
+          <TextInput
+            placeholder="Sobrenome"
+            value={lastName}
+            onChangeText={setLastName}
+            style={styles.input}
+            placeholderTextColor="#999"
+          />
+        </>
+      )}
 
       <TextInput
         placeholder="Email"
@@ -82,8 +127,9 @@ export default function LoginScreen({ navigation }) {
       />
 
       <TouchableOpacity
-        style={styles.button}
+        style={[styles.button, loading && { opacity: 0.6 }]}
         onPress={isRegistering ? handleRegister : handleLogin}
+        disabled={loading}
       >
         <Text style={styles.buttonText}>{isRegistering ? 'Cadastrar' : 'Entrar'}</Text>
       </TouchableOpacity>
@@ -91,18 +137,18 @@ export default function LoginScreen({ navigation }) {
       <Text style={styles.or}>ou:</Text>
 
       <View style={styles.socialContainer}>
-        <TouchableOpacity onPress={() => promptAsync()} disabled={!request}>
+        <TouchableOpacity onPress={() => promptAsync()} disabled={!request || loading}>
           <AntDesign name="google" size={32} color="#DB4437" />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity disabled={true} style={{ opacity: 0.5 }}>
           <FontAwesome name="facebook-square" size={32} color="#3b5998" />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity disabled={true} style={{ opacity: 0.5 }}>
           <Octicons name="mark-github" size={32} color="black" />
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={() => setIsRegistering(!isRegistering)}>
+      <TouchableOpacity onPress={() => setIsRegistering(!isRegistering)} disabled={loading}>
         <Text style={styles.registerText}>
           {isRegistering
             ? 'Já tem uma conta? Entre agora'
