@@ -5,14 +5,21 @@ import { auth } from '../firebaseConfig';
 const ProfileScreen = ({ navigation }) => {
   const user = auth.currentUser;
 
-  const handleSignOut = async () => {
-    try {
-      await auth.signOut();
-      navigation.replace('LoginScreen');
-    } catch (error) {
-      console.error('Erro ao deslogar:', error);
-      Alert.alert('Erro', 'Não foi possível sair. Tente novamente.');
-    }
+  const handleSignOut = () => {
+    Alert.alert('Sair', 'Tem certeza que deseja sair?', [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Sim',
+        onPress: async () => {
+          try {
+            await auth.signOut();
+            navigation.replace('LoginScreen');
+          } catch (error) {
+            Alert.alert('Erro', 'Não foi possível sair. Tente novamente.');
+          }
+        },
+      },
+    ]);
   };
 
   return (
