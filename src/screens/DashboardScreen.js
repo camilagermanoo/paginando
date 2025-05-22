@@ -63,14 +63,52 @@ const DashboardScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 10, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#ccc' },
-  searchContainer: { flexDirection: 'row', backgroundColor: '#e0e0e0', borderRadius: 20, paddingHorizontal: 12, alignItems: 'center', flex: 1, height: 36 },
-  searchIcon: { marginRight: 8 },
-  searchInput: { flex: 1, fontSize: 14, color: '#000' },
-  listContainer: { paddingBottom: 16 },
-  itemContainer: { flexDirection: 'row', padding: 16, borderBottomWidth: 1, borderBottomColor: '#ccc', alignItems: 'center', gap: 12 },
-  thumbnail: { width: 50, height: 75, marginRight: 10 },
-  title: { fontWeight: 'bold', fontSize: 16 },
+  header: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    paddingHorizontal: 12, 
+    paddingVertical: 10, 
+    backgroundColor: '#fff', 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#ccc'
+  },
+  searchContainer: { 
+    flexDirection: 'row', 
+    backgroundColor: '#e0e0e0', 
+    borderRadius: 20, 
+    paddingHorizontal: 12, 
+    alignItems: 'center', 
+    flex: 1, 
+    height: 36 
+  },
+  searchIcon: { 
+    marginRight: 8 
+  },
+  searchInput: { 
+    flex: 1, 
+    fontSize: 14, 
+    color: '#000' 
+  },
+  listContainer: { 
+    paddingBottom: 16 
+  },
+  itemContainer: { 
+    flexDirection: 'row', 
+    padding: 16, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#ccc', 
+    alignItems: 'center', 
+    gap: 12 
+  },
+  thumbnail: { 
+    width: 50, 
+    height: 75, 
+    marginRight: 10 
+  },
+  title: { 
+    fontWeight: 'bold', 
+    fontSize: 16 
+  },
 });
 
 export default DashboardScreen;

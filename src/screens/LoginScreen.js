@@ -115,14 +115,65 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 24, justifyContent: 'center', alignItems: 'center' },
-  logo: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, marginTop: -60 },
-  heading: { fontSize: 18, fontWeight: '600', marginBottom: 20 },
-  input: { width: '100%', height: 48, borderBottomWidth: 1, borderBottomColor: '#ccc', marginBottom: 16, fontSize: 16, color: '#333' },
-  button: { backgroundColor: '#69a9ff', width: '100%', paddingVertical: 14, borderRadius: 6, alignItems: 'center', marginTop: 10 },
-  buttonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
-  or: { marginVertical: 12, fontSize: 14, color: '#333' },
-  socialContainer: { flexDirection: 'row', justifyContent: 'space-around', width: '60%', marginBottom: 20 },
-  registerText: { color: '#0057ff', fontWeight: '500', marginTop: 10 },
-  image: { width: 250, height: 250, resizeMode: 'contain', marginBottom: 10 },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#fff', 
+    paddingHorizontal: 24, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  logo: { 
+    fontSize: 28, 
+    fontWeight: 'bold',
+    marginBottom: 20, 
+    marginTop: -60 
+  },
+  heading: { 
+    fontSize: 18, 
+    fontWeight: '600', 
+    marginBottom: 20 
+  },
+  input: { 
+    width: '100%', 
+    height: 48, 
+    borderBottomWidth: 1, 
+    borderBottomColor: '#ccc', 
+    marginBottom: 16, 
+    fontSize: 16, color: '#333' 
+  },
+  button: { 
+    backgroundColor: '#69a9ff', 
+    width: '100%', 
+    paddingVertical: 14, 
+    borderRadius: 6, 
+    alignItems: 'center', 
+    marginTop: 10 
+  },
+  buttonText: { 
+    color: '#fff', 
+    fontWeight: '600', 
+    fontSize: 16 
+  },
+  or: { 
+    marginVertical: 12, 
+    fontSize: 14, 
+    color: '#333' 
+  },
+  socialContainer: { 
+    flexDirection: 'row',
+    justifyContent: 'space-around', 
+    width: '60%', 
+    marginBottom: 20 
+  },
+  registerText: { 
+    color: '#0057ff', 
+    fontWeight: '500', 
+    marginTop: 10 
+  },
+  image: { 
+    width: 250, 
+    height: 250, 
+    resizeMode: 'contain', 
+    marginBottom: 10 
+  },
 });

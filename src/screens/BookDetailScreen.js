@@ -20,10 +20,26 @@ const BookDetailScreen = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { padding: 20, alignItems: 'center' },
-  title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },
-  image: { width: 150, height: 220, marginBottom: 10 },
-  text: { fontSize: 16, textAlign: 'justify', marginTop: 10 },
+  container: { 
+    padding: 20, 
+    alignItems: 'center' 
+  },
+  title: { 
+    fontSize: 22, 
+    fontWeight: 'bold', 
+    marginBottom: 10, 
+    textAlign: 'center' 
+  },
+  image: { 
+    width: 150, 
+    height: 220, 
+    marginBottom: 10 
+  },
+  text: { 
+    fontSize: 16, 
+    textAlign: 'justify', 
+    marginTop: 10 
+  },
 });
 
 export default BookDetailScreen;
