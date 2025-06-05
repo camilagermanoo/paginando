@@ -1,13 +1,15 @@
+// App.js
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import AppNavigator from './src/navigation/AppNavigator';
-import { StatusBar } from 'react-native';
+import { AuthProvider } from './src/hooks/useAuth';
+import DrawerNavigator from './src/navigation/DrawerNavigator';
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" />
-      <AppNavigator />
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <DrawerNavigator />
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
