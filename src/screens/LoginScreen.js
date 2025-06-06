@@ -1,27 +1,84 @@
-// /src/screens/LoginScreen.js
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
-import { useAuth } from '../hooks/useAuth';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebaseConfig';
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
-  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const navigation = useNavigation();
+
+  const handleAuth = async () => {
+    if (!email || !password) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      await login(email, password);
+      if (isRegistering) {
+        await createUserWithEmailAndPassword(auth, email, password);
+        Alert.alert('Sucesso', 'Conta criada com sucesso!');
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
     } catch (error) {
-      Alert.alert('Erro', 'Falha no login. Verifique suas credenciais.');
+      console.error(error);
+      Alert.alert('Erro', error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput placeholder="Email" style={styles.input} onChangeText={setEmail} value={email} />
-      <TextInput placeholder="Senha" style={styles.input} onChangeText={setPassword} value={password} secureTextEntry />
-      <Button title="Entrar" onPress={handleLogin} />
+      <Text style={styles.title}>{isRegistering ? 'Cadastro' : 'Login'}</Text>
+
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+
+      <TextInput
+        placeholder="Senha"
+        value={password}
+        onChangeText={setPassword}
+        style={styles.input}
+        secureTextEntry
+      />
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#000" />
+      ) : (
+        <TouchableOpacity style={styles.button} onPress={handleAuth}>
+          <Text style={styles.buttonText}>
+            {isRegistering ? 'Cadastrar' : 'Entrar'}
+          </Text>
+        </TouchableOpacity>
+      )}
+
+      <TouchableOpacity onPress={() => setIsRegistering(!isRegistering)}>
+        <Text style={styles.toggleText}>
+          {isRegistering ? 'Já tem uma conta? Faça login' : 'Não tem conta? Cadastre-se'}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -29,19 +86,36 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
-  },
-  input: {
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
+    justifyContent: 'center',
+    backgroundColor: '#fff',
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 26,
+    marginBottom: 30,
     textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  input: {
+    backgroundColor: '#eee',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 15,
+  },
+  button: {
+    backgroundColor: '#333',
+    padding: 15,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  toggleText: {
+    textAlign: 'center',
+    marginTop: 15,
+    color: '#555',
   },
 });

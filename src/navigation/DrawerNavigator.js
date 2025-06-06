@@ -1,23 +1,44 @@
-// /src/navigation/DrawerNavigator.js
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import StackNavigator from './StackNavigator';
+import { MaterialIcons } from '@expo/vector-icons';
 import ProfileScreen from '../screens/ProfileScreen';
-import { useAuth } from '../hooks/useAuth';
-import { Button } from 'react-native';
+import FavoriteBooksScreen from '../screens/FavoriteBooksScreen';
+import DashboardScreen from '../screens/DashboardScreen';
 
 const Drawer = createDrawerNavigator();
 
 export default function DrawerNavigator() {
-  const { logout } = useAuth();
-
   return (
-    <Drawer.Navigator screenOptions={{ headerShown: false }}>
-      <Drawer.Screen name="Início" component={StackNavigator} />
-      <Drawer.Screen name="Perfil" component={ProfileScreen} />
+    <Drawer.Navigator initialRouteName="Dashboard">
       <Drawer.Screen
-        name="Sair"
-        component={() => <Button title="Sair" onPress={logout} />}
+        name="Dashboard"
+        component={DashboardScreen}
+        options={{
+          drawerLabel: 'Início',
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          drawerLabel: 'Perfil',
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="person" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Favorites"
+        component={FavoriteBooksScreen}
+        options={{
+          drawerLabel: 'Favoritos',
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="favorite" size={size} color={color} />
+          ),
+        }}
       />
     </Drawer.Navigator>
   );

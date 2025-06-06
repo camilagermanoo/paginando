@@ -1,15 +1,23 @@
-// /src/screens/DashboardScreen.js
+// /src/screens/FavoriteBooksScreen.js
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
 import { useFavoriteBooks } from '../hooks/useFavoriteBooks';
 
-export default function DashboardScreen() {
+export default function FavoriteBooksScreen() {
   const { favorites } = useFavoriteBooks();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredBooks = favorites.filter((book) =>
     book.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (favorites.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>Nenhum livro favoritado ainda.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.wrapper}>
@@ -19,23 +27,17 @@ export default function DashboardScreen() {
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
-      {filteredBooks.length === 0 ? (
-        <View style={styles.container}>
-          <Text style={styles.message}>Nenhum livro encontrado.</Text>
-        </View>
-      ) : (
-        <FlatList
-          style={styles.list}
-          data={filteredBooks}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.author}>{item.author || 'Autor desconhecido'}</Text>
-            </View>
-          )}
-        />
-      )}
+      <FlatList
+        style={styles.list}
+        data={filteredBooks}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.author}>{item.author || 'Autor desconhecido'}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
