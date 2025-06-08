@@ -1,7 +1,6 @@
-// /src/hooks/useFavoriteBooks.js
 import { useState, useEffect, useContext, createContext } from 'react';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth } from '../../firebaseConfig';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebaseConfig';
 
 const FavoriteBooksContext = createContext();
 
@@ -11,7 +10,6 @@ export const FavoriteBooksProvider = ({ children }) => {
   useEffect(() => {
     const fetchFavorites = async () => {
       if (!auth.currentUser) return;
-      const db = getFirestore();
       const ref = doc(db, 'favorites', auth.currentUser.uid);
       const docSnap = await getDoc(ref);
       if (docSnap.exists()) {
@@ -23,7 +21,6 @@ export const FavoriteBooksProvider = ({ children }) => {
   }, []);
 
   const toggleFavorite = async (book) => {
-    const db = getFirestore();
     const ref = doc(db, 'favorites', auth.currentUser.uid);
     let updatedFavorites = [...favorites];
 
