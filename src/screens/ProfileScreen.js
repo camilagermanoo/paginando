@@ -1,6 +1,5 @@
-// ProfileScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'; // Importe Alert
 import { useAuth } from '../hooks/useAuth';
 import { useFavoriteBooks } from '../hooks/useFavoriteBooks';
 import { useNavigation } from '@react-navigation/native';
@@ -26,6 +25,25 @@ export default function ProfileScreen() {
     fetchUserData();
   }, [user]);
 
+  const handleLogout = () => {
+    Alert.alert(
+      "Confirmar saída",
+      "Tem certeza que deseja sair?",
+      [
+        {
+          text: "Sim", 
+          onPress: () => logout() 
+        },
+        {
+          text: "Não",
+          onPress: () => console.log("Saída cancelada"), 
+          style: "cancel" 
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -47,7 +65,7 @@ export default function ProfileScreen() {
         Total de livros favoritados: {favorites?.length || 0}
       </Text>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutText}>Sair</Text>
       </TouchableOpacity>
     </View>
