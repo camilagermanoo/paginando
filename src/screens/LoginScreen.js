@@ -9,19 +9,21 @@ import {
   Alert,
 } from 'react-native';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebaseConfig';
+import { auth, db } from '../../firebaseConfig';
+import { doc, setDoc } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
 
   const handleAuth = async () => {
-    if (!email || !password) {
+    if (!email || !password || (isRegistering && !fullName)) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
       return;
     }
@@ -30,7 +32,14 @@ export default function LoginScreen() {
 
     try {
       if (isRegistering) {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Salva o nome no Firestore
+        await setDoc(doc(db, 'paginando-users', user.uid), {
+          fullName,
+        });
+
         Alert.alert('Sucesso', 'Conta criada com sucesso!');
       } else {
         await signInWithEmailAndPassword(auth, email, password);
@@ -46,6 +55,15 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{isRegistering ? 'Cadastro' : 'Login'}</Text>
+
+      {isRegistering && (
+        <TextInput
+          placeholder="Nome completo"
+          value={fullName}
+          onChangeText={setFullName}
+          style={styles.input}
+        />
+      )}
 
       <TextInput
         placeholder="Email"
