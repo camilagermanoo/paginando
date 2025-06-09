@@ -9,3 +9,10 @@
 - 📚 Visualizar detalhes de um livro (capa, título, autor, descrição)
 - ❤️ Marcar livros como favoritos
 
+## ✨ Imagens
+
+![image](https://github.com/user-attachments/assets/77f1bee6-9586-48cb-a347-412f49f6b67e)
+
+![image](https://github.com/user-attachments/assets/e05ccfb6-ed3e-45ac-ae81-40b4b41e0fd4)
+
+![image](https://github.com/user-attachments/assets/f3301c31-f302-4053-ae48-a82c28573112)
