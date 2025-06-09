@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider, useAuth } from './src/hooks/useAuth';
-import { FavoriteBooksProvider } from './src/hooks/useFavoriteBooks'; // 👈 adicione isso
-import DrawerNavigator from './src/navigation/DrawerNavigator';
+import { FavoriteBooksProvider } from './src/hooks/useFavoriteBooks';
 import LoginScreen from './src/screens/LoginScreen';
 import { ActivityIndicator, View } from 'react-native';
+import MainStackNavigator from './src/navigation/MainStackNavigator';
 
 function Main() {
   const { user, loading } = useAuth();
@@ -19,7 +19,7 @@ function Main() {
 
   return (
     <NavigationContainer>
-      {user ? <DrawerNavigator /> : <LoginScreen />}
+      {user ? <MainStackNavigator /> : <LoginScreen />}
     </NavigationContainer>
   );
 }

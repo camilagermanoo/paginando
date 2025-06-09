@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { fetchBooks } from '../services/api';
 
 export default function DashboardScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -31,6 +41,7 @@ export default function DashboardScreen() {
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
+
       {loading ? (
         <Text style={styles.message}>Carregando...</Text>
       ) : books.length === 0 ? (
@@ -42,14 +53,29 @@ export default function DashboardScreen() {
           style={styles.list}
           data={books}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Text style={styles.title}>{item.volumeInfo?.title || 'Sem título'}</Text>
-              <Text style={styles.author}>
-                {item.volumeInfo?.authors?.join(', ') || 'Autor desconhecido'}
-              </Text>
-            </View>
-          )}
+          renderItem={({ item }) => {
+            const info = item.volumeInfo;
+            return (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('BookDetail', { book: item })}
+              >
+                <View style={styles.item}>
+                  {info?.imageLinks?.thumbnail && (
+                    <Image
+                      source={{ uri: info.imageLinks.thumbnail }}
+                      style={styles.thumbnail}
+                    />
+                  )}
+                  <View style={styles.details}>
+                    <Text style={styles.title}>{info?.title || 'Sem título'}</Text>
+                    <Text style={styles.author}>
+                      {info?.authors?.join(', ') || 'Autor desconhecido'}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
         />
       )}
     </View>
@@ -84,13 +110,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
+  thumbnail: {
+    width: 60,
+    height: 90,
+    borderRadius: 4,
+    backgroundColor: '#eee',
+  },
+  details: {
+    flex: 1,
+    marginLeft: 12,
+  },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 4,
   },
   author: {
     fontSize: 14,

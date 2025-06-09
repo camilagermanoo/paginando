@@ -8,8 +8,9 @@ export default function FavoriteBooksScreen() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredBooks = favorites.filter((book) =>
-    book.title.toLowerCase().includes(searchQuery.toLowerCase())
+    book.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
 
   if (favorites.length === 0) {
     return (
