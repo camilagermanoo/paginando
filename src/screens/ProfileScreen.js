@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'; // Importe Alert
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 import { useFavoriteBooks } from '../hooks/useFavoriteBooks';
 import { useNavigation } from '@react-navigation/native';
@@ -7,7 +7,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 
 export default function ProfileScreen() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { favorites } = useFavoriteBooks();
   const navigation = useNavigation();
   const [fullName, setFullName] = useState('');
@@ -26,22 +26,7 @@ export default function ProfileScreen() {
   }, [user]);
 
   const handleLogout = () => {
-    Alert.alert(
-      "Confirmar saída",
-      "Tem certeza que deseja sair?",
-      [
-        {
-          text: "Sim", 
-          onPress: () => logout() 
-        },
-        {
-          text: "Não",
-          onPress: () => console.log("Saída cancelada"), 
-          style: "cancel" 
-        },
-      ],
-      { cancelable: false }
-    );
+    navigation.navigate('ConfirmLogout');
   };
 
   return (

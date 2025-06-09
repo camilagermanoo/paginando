@@ -1,16 +1,16 @@
-// /src/screens/FavoriteBooksScreen.js
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native';
 import { useFavoriteBooks } from '../hooks/useFavoriteBooks';
+import { useNavigation } from '@react-navigation/native';
 
 export default function FavoriteBooksScreen() {
   const { favorites } = useFavoriteBooks();
   const [searchQuery, setSearchQuery] = useState('');
+  const navigation = useNavigation();
 
   const filteredBooks = favorites.filter((book) =>
-    book.title?.toLowerCase().includes(searchQuery.toLowerCase())
+    book.volumeInfo?.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
 
   if (favorites.length === 0) {
     return (
@@ -32,12 +32,30 @@ export default function FavoriteBooksScreen() {
         style={styles.list}
         data={filteredBooks}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.author}>{item.author || 'Autor desconhecido'}</Text>
-          </View>
-        )}
+        renderItem={({ item }) => {
+          // Acesse volumeInfo de 'item'
+          const info = item.volumeInfo;
+          return (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('BookDetail', { book: item })}
+            >
+              <View style={styles.item}>
+                {info?.imageLinks?.thumbnail && (
+                  <Image
+                    source={{ uri: info.imageLinks.thumbnail }}
+                    style={styles.thumbnail}
+                  />
+                )}
+                <View style={styles.details}>
+                  <Text style={styles.title}>{info?.title || 'Sem título'}</Text>
+                  <Text style={styles.author}>
+                    {info?.authors?.join(', ') || 'Autor desconhecido'}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
       />
     </View>
   );
@@ -70,9 +88,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+  },
+  thumbnail: {
+    width: 60,
+    height: 90,
+    borderRadius: 4,
+    backgroundColor: '#eee',
+    marginRight: 12,
+  },
+  details: {
+    flex: 1,
   },
   title: {
     fontSize: 18,
