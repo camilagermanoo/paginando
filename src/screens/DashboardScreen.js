@@ -1,15 +1,27 @@
-// /src/screens/DashboardScreen.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TextInput } from 'react-native';
-import { useFavoriteBooks } from '../hooks/useFavoriteBooks';
+import { fetchBooks } from '../services/api';
 
 export default function DashboardScreen() {
-  const { favorites } = useFavoriteBooks();
   const [searchQuery, setSearchQuery] = useState('');
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredBooks = favorites.filter((book) =>
-    book.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (searchQuery.trim().length > 0) {
+        setLoading(true);
+        fetchBooks(searchQuery)
+          .then(setBooks)
+          .catch(() => setBooks([]))
+          .finally(() => setLoading(false));
+      } else {
+        setBooks([]);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery]);
 
   return (
     <View style={styles.wrapper}>
@@ -19,19 +31,23 @@ export default function DashboardScreen() {
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
-      {filteredBooks.length === 0 ? (
+      {loading ? (
+        <Text style={styles.message}>Carregando...</Text>
+      ) : books.length === 0 ? (
         <View style={styles.container}>
           <Text style={styles.message}>Nenhum livro encontrado.</Text>
         </View>
       ) : (
         <FlatList
           style={styles.list}
-          data={filteredBooks}
+          data={books}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View style={styles.item}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.author}>{item.author || 'Autor desconhecido'}</Text>
+              <Text style={styles.title}>{item.volumeInfo?.title || 'Sem título'}</Text>
+              <Text style={styles.author}>
+                {item.volumeInfo?.authors?.join(', ') || 'Autor desconhecido'}
+              </Text>
             </View>
           )}
         />
@@ -54,6 +70,7 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 16,
     color: '#666',
+    textAlign: 'center',
   },
   searchInput: {
     height: 40,
